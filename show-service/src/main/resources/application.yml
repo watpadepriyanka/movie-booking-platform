@@ -4,3 +4,11 @@ server:
 spring:
   application:
     name: show-service
+
+    datasource:
+      url: jdbc:h2:mem:showdb
+
+    jpa:
+      hibernate:
+        ddl-auto: update
+      show-sql: true
