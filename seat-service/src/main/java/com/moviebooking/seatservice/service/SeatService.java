@@ -1,6 +1,8 @@
 package com.moviebooking.seatservice.service;
 
 import java.util.List;
+
+import com.moviebooking.seatservice.model.Booking;
 import com.moviebooking.seatservice.model.Seat;
 
 
@@ -14,4 +16,6 @@ public interface SeatService {
     Seat confirmSeat(Long showId, String seatNumber);
 
     Seat releaseSeat(Long showId, String seatNumber);
+
+    Booking bookSeat(Long showId, String seatNumber, String customerName);
 }

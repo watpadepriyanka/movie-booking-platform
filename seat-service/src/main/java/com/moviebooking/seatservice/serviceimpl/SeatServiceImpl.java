@@ -1,8 +1,10 @@
 package com.moviebooking.seatservice.serviceimpl;
 
 import com.moviebooking.seatservice.exception.SeatUnavailableException;
+import com.moviebooking.seatservice.model.Booking;
 import com.moviebooking.seatservice.model.Seat;
 import com.moviebooking.seatservice.model.SeatStatus;
+import com.moviebooking.seatservice.repository.BookingRepository;
 import com.moviebooking.seatservice.repository.SeatRepository;
 import com.moviebooking.seatservice.service.SeatService;
 import org.springframework.stereotype.Service;
@@ -15,9 +17,11 @@ import java.util.List;
 public class SeatServiceImpl implements SeatService {
 
     private final SeatRepository seatRepository;
+    private final BookingRepository bookingRepository;
 
-    public SeatServiceImpl(SeatRepository seatRepository) {
+    public SeatServiceImpl(SeatRepository seatRepository, BookingRepository bookingRepository) {
         this.seatRepository = seatRepository;
+        this.bookingRepository = bookingRepository;
     }
 
     @Override
@@ -77,5 +81,26 @@ public class SeatServiceImpl implements SeatService {
         seat.setStatus(SeatStatus.AVAILABLE);
         seat.setLockedAt(null);
         return seatRepository.save(seat);
+    }
+
+    @Transactional
+    @Override
+    public Booking bookSeat(Long showId, String seatNumber, String customerName) {
+
+        Seat seat = lockSeat(showId, seatNumber);
+
+        seat.setStatus(SeatStatus.BOOKED);
+        seatRepository.save(seat);
+
+        Booking booking = Booking.builder()
+                .showId(showId)
+                .seatNumber(seatNumber)
+                .customerName(customerName)
+                .amount(250.0)
+                .status("CONFIRMED")
+                .bookedAt(LocalDateTime.now())
+                .build();
+
+        return bookingRepository.save(booking);
     }
 }

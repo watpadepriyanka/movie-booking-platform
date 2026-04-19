@@ -1,5 +1,6 @@
 package com.moviebooking.seatservice.controller;
 
+import com.moviebooking.seatservice.model.Booking;
 import com.moviebooking.seatservice.model.Seat;
 import com.moviebooking.seatservice.service.SeatService;
 import org.springframework.web.bind.annotation.*;
@@ -50,6 +51,15 @@ public class SeatController {
     @GetMapping("/test")
     public String test() {
         return "Seat Service Running";
+    }
+
+    @PostMapping("/book")
+    public Booking bookSeat(
+            @RequestParam("showId") Long showId,
+            @RequestParam("seatNumber") String seatNumber,
+            @RequestParam("customerName") String customerName) {
+
+        return seatService.bookSeat(showId, seatNumber, customerName);
     }
 
 
