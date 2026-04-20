@@ -6,6 +6,7 @@ import com.moviebooking.seatservice.service.SeatService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 @RestController
 @RequestMapping("/seats")
 public class SeatController {
