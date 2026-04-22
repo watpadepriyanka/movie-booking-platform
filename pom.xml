@@ -27,7 +27,6 @@
         <module>show-service</module>
         <module>booking-service</module>
         <module>seat-service</module>
-        <module>test</module>
     </modules>
 
 
