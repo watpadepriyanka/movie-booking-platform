@@ -1,6 +1,7 @@
 package com.moviebooking.seatservice.serviceimpl;
 
 import com.moviebooking.seatservice.exception.SeatUnavailableException;
+import com.moviebooking.seatservice.kafka.KafkaProducerService;
 import com.moviebooking.seatservice.model.Booking;
 import com.moviebooking.seatservice.model.Seat;
 import com.moviebooking.seatservice.model.SeatStatus;
@@ -18,10 +19,12 @@ public class SeatServiceImpl implements SeatService {
 
     private final SeatRepository seatRepository;
     private final BookingRepository bookingRepository;
+    private final KafkaProducerService kafkaProducerService;
 
-    public SeatServiceImpl(SeatRepository seatRepository, BookingRepository bookingRepository) {
+    public SeatServiceImpl(SeatRepository seatRepository, BookingRepository bookingRepository, KafkaProducerService kafkaProducerService) {
         this.seatRepository = seatRepository;
         this.bookingRepository = bookingRepository;
+        this.kafkaProducerService = kafkaProducerService;
     }
 
     @Override
@@ -89,6 +92,7 @@ public class SeatServiceImpl implements SeatService {
 
         Seat seat = lockSeat(showId, seatNumber);
 
+
         seat.setStatus(SeatStatus.BOOKED);
         seatRepository.save(seat);
 
@@ -101,6 +105,16 @@ public class SeatServiceImpl implements SeatService {
                 .bookedAt(LocalDateTime.now())
                 .build();
 
-        return bookingRepository.save(booking);
+        Booking savedBooking = bookingRepository.save(booking);
+
+        kafkaProducerService.sendBookingConfirmed(
+                "Booking Confirmed | BookingId=" + savedBooking.getId()
+                        + " | ShowId=" + showId
+                        + " | Seat=" + seatNumber
+                        + " | Customer=" + customerName
+        );
+
+        return savedBooking;
+
     }
 }
