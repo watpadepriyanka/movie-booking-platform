@@ -5,6 +5,8 @@ import com.moviebooking.seatservice.model.Seat;
 import com.moviebooking.seatservice.service.SeatService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 @RestController
@@ -35,6 +37,8 @@ public class SeatController {
     public Seat confirmSeat(
             @RequestParam("showId") Long showId,
             @RequestParam("seatNumber") String seatNumber) {
+
+
 
         return seatService.confirmSeat(showId, seatNumber);
     }

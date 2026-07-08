@@ -15,6 +15,6 @@ spring:
             - Path=/shows/**
 
         - id: seat-service
-          uri: http://localhost:8083
+          uri: http://localhost:8085
           predicates:
             - Path=/seats/**
